@@ -4,10 +4,10 @@
 #include <time.h>
 #include "biblioteca.h"
 
-int idExiste(ListNodePtr currentPtr, int idBusca) { //procura se o id digitado ja existe na struct
-    while (currentPtr != NULL) {
-        if (currentPtr->compromisso.id == idBusca) return 1;
-        currentPtr = currentPtr->nextPtr;
+int idExiste(NoListaPtr atualPtr, int idBusca) { //procura se o id digitado ja existe na struct
+    while (atualPtr != NULL) {
+        if (atualPtr->compromisso.id == idBusca) return 1;
+        atualPtr = atualPtr->proximoPtr;
     }
     return 0;
 }
@@ -48,59 +48,59 @@ int compararDatas(struct Data d1, struct Data d2) {//compara data anterior com a
     return d1.dia > d2.dia;
 }
 
-void insert(ListNodePtr *sPtr, struct Compromisso novo) {
-    ListNodePtr newPtr = malloc(sizeof(ListNode));
-    ListNodePtr previousPtr = NULL;
-    ListNodePtr currentPtr = *sPtr;
+void inserir(NoListaPtr *sPtr, struct Compromisso novo) {
+    NoListaPtr novoPtr = malloc(sizeof(NoLista));
+    NoListaPtr anteriorPtr = NULL;
+    NoListaPtr atualPtr = *sPtr;
 
-    if (newPtr != NULL) {
-        newPtr->compromisso = novo;
-        newPtr->nextPtr = NULL;
-        while (currentPtr != NULL && compararDatas(novo.data, currentPtr->compromisso.data)) {
-            previousPtr = currentPtr;
-            currentPtr = currentPtr->nextPtr;
+    if (novoPtr != NULL) {
+        novoPtr->compromisso = novo;
+        novoPtr->proximoPtr = NULL;
+        while (atualPtr != NULL && compararDatas(novo.data, atualPtr->compromisso.data)) {
+            anteriorPtr = atualPtr;
+            atualPtr = atualPtr->proximoPtr;
         }
-        if (previousPtr == NULL) {
-            newPtr->nextPtr = *sPtr;
-            *sPtr = newPtr;
+        if (anteriorPtr == NULL) {
+            novoPtr->proximoPtr = *sPtr;
+            *sPtr = novoPtr;
         } else {
-            previousPtr->nextPtr = newPtr;
-            newPtr->nextPtr = currentPtr;
+            anteriorPtr->proximoPtr = novoPtr;
+            novoPtr->proximoPtr = atualPtr;
         }
     }
 }
 
-char deleteNode(ListNodePtr *sPtr, int idBusca) {
-    if (isEmpty(*sPtr)) return '\0';
-    ListNodePtr previousPtr = NULL;
-    ListNodePtr currentPtr = *sPtr;
+char excluirNo(NoListaPtr *sPtr, int idBusca) {
+    if (estaVazia(*sPtr)) return '\0';
+    NoListaPtr anteriorPtr = NULL;
+    NoListaPtr atualPtr = *sPtr;
 
-    while (currentPtr != NULL && currentPtr->compromisso.id != idBusca) {
-        previousPtr = currentPtr;
-        currentPtr = currentPtr->nextPtr;
+    while (atualPtr != NULL && atualPtr->compromisso.id != idBusca) {
+        anteriorPtr = atualPtr;
+        atualPtr = atualPtr->proximoPtr;
     }
 
-    if (currentPtr != NULL) {
-        char letra = currentPtr->compromisso.nome[0];
-        ListNodePtr tempPtr = currentPtr;
-        if (previousPtr == NULL) *sPtr = (*sPtr)->nextPtr;
-        else previousPtr->nextPtr = currentPtr->nextPtr;
+    if (atualPtr != NULL) {
+        char letra = atualPtr->compromisso.nome[0];
+        NoListaPtr tempPtr = atualPtr;
+        if (anteriorPtr == NULL) *sPtr = (*sPtr)->proximoPtr;
+        else anteriorPtr->proximoPtr = atualPtr->proximoPtr;
         free(tempPtr);
         return letra;
     }
     return '\0';
 }
 
-int isEmpty(ListNodePtr sPtr) { return sPtr == NULL; }//verifica se a lista ja teve algum compromisso digitado
+int estaVazia(NoListaPtr sPtr) { return sPtr == NULL; }//verifica se a lista ja teve algum compromisso digitado
 
-void printList(ListNodePtr currentPtr) {//printa todos os meses com os compromissos
-    if (isEmpty(currentPtr)) {
+void imprimirLista(NoListaPtr atualPtr) {//printa todos os meses com os compromissos
+    if (estaVazia(atualPtr)) {
         printf("\nAgenda vazia.\n\n");
         return;
     }
     char *nomeMeses[] = {"", "JANEIRO", "FEVEREIRO", "MARCO", "ABRIL", "MAIO", "JUNHO", 
                          "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"};
-    ListNodePtr temp = currentPtr;
+    NoListaPtr temp = atualPtr;
 
     while (temp != NULL) {
         int anoAtual = temp->compromisso.data.ano;
@@ -115,10 +115,10 @@ void printList(ListNodePtr currentPtr) {//printa todos os meses com os compromis
 
         for (int d = 1; d <= diasTotais; d++) {
             int temEvento = 0;
-            ListNodePtr check = temp;
+            NoListaPtr check = temp;
             while (check != NULL && check->compromisso.data.ano == anoAtual && check->compromisso.data.mes == mesAtual) {
                 if (check->compromisso.data.dia == d) { temEvento = 1; break; }
-                check = check->nextPtr;
+                check = check->proximoPtr;
             }
             if (temEvento) printf("[%2d]", d); else printf(" %2d ", d);//destaca evento com []
             if ((d + diaSemanaInicio) % 7 == 0) printf("\n");//finaliza a semana
@@ -126,13 +126,13 @@ void printList(ListNodePtr currentPtr) {//printa todos os meses com os compromis
         printf("\n-----------------------------\nEventos deste mes:\n");
         while (temp != NULL && temp->compromisso.data.ano == anoAtual && temp->compromisso.data.mes == mesAtual) {
             printf("Dia %02d - [ID: %3d] %s | Descricao: %s\n", temp->compromisso.data.dia, temp->compromisso.id, temp->compromisso.nome, temp->compromisso.descricao);
-            temp = temp->nextPtr;
+            temp = temp->proximoPtr;
         }
     }
     printf("=============================\n\n");
 }
 
-void printMonth(ListNodePtr currentPtr, int mesBusca, int anoBusca) {//printa o mês informado
+void imprimirMes(NoListaPtr atualPtr, int mesBusca, int anoBusca) {//printa o mês informado
     char *nomeMeses[] = {"", "JANEIRO", "FEVEREIRO", "MARCO", "ABRIL", "MAIO", "JUNHO", 
                          "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"};
 
@@ -146,36 +146,36 @@ void printMonth(ListNodePtr currentPtr, int mesBusca, int anoBusca) {//printa o 
 
     for (int d = 1; d <= diasTotais; d++) {
         int temEvento = 0;
-        ListNodePtr check = currentPtr;
+        NoListaPtr check = atualPtr;
         while (check != NULL) {
             if (check->compromisso.data.ano == anoBusca && check->compromisso.data.mes == mesBusca && check->compromisso.data.dia == d) {
                 temEvento = 1; break;
             }
-            check = check->nextPtr;
+            check = check->proximoPtr;
         }
         if (temEvento) printf("[%2d]", d); else printf(" %2d ", d);
         if ((d + diaSemanaInicio) % 7 == 0) printf("\n");
     }
     printf("\n-----------------------------\nEventos deste mes:\n");
     int encontrou = 0;
-    ListNodePtr temp = currentPtr;
+    NoListaPtr temp = atualPtr;
     while (temp != NULL) {
         if (temp->compromisso.data.ano == anoBusca && temp->compromisso.data.mes == mesBusca) {
             printf("Dia %02d - [ID: %3d] %s | Descricao: %s\n", temp->compromisso.data.dia, temp->compromisso.id, temp->compromisso.nome, temp->compromisso.descricao);
             encontrou = 1;
         }
-        temp = temp->nextPtr;
+        temp = temp->proximoPtr;
     }
     if (!encontrou) printf("Nenhum evento programado.\n");
     printf("=============================\n\n");
 }
 
-void modificarCompromisso(ListNodePtr *sPtr) {
+void modificarCompromisso(NoListaPtr *sPtr) {
     int idBusca;
     printf("Digite o ID do compromisso que deseja modificar: ");
     scanf("%d", &idBusca);
 
-    ListNodePtr temp = *sPtr;
+    NoListaPtr temp = *sPtr;
     struct Compromisso c_aux;
     int achou = 0;
 
@@ -185,7 +185,7 @@ void modificarCompromisso(ListNodePtr *sPtr) {
             achou = 1;
             break;
         }
-        temp = temp->nextPtr;
+        temp = temp->proximoPtr;
     }
 
     if (!achou) {
@@ -193,18 +193,18 @@ void modificarCompromisso(ListNodePtr *sPtr) {
         return;
     }
 
-    int subChoice;
+    int subEscolha;
     printf("\nModificando ID %d:\n", idBusca);
     printf("1. Alterar Nome\n2. Alterar Descricao\n3. Alterar Data\n? "); //Menu de modificação
-    scanf("%d", &subChoice);
+    scanf("%d", &subEscolha);
 
-    if (subChoice == 1) {
+    if (subEscolha == 1) {
         printf("Novo Nome: ");
         scanf(" %[^\n]", c_aux.nome);
-    } else if (subChoice == 2) {
+    } else if (subEscolha == 2) {
         printf("Nova Descricao: ");
         scanf(" %[^\n]", c_aux.descricao);
-    } else if (subChoice == 3) {
+    } else if (subEscolha == 3) {
         do {
             printf("Nova Data (DD MM AAAA): ");
             scanf("%d %d %d", &c_aux.data.dia, &c_aux.data.mes, &c_aux.data.ano);
@@ -216,8 +216,8 @@ void modificarCompromisso(ListNodePtr *sPtr) {
         printf("Opcao invalida.\n");
         return;
     }
-    deleteNode(sPtr, idBusca);
-    insert(sPtr, c_aux);
+    excluirNo(sPtr, idBusca);
+    inserir(sPtr, c_aux);
 
     printf("\nCompromisso atualizado e lista reordenada com sucesso!\n");
 }
