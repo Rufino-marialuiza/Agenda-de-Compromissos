@@ -10,7 +10,8 @@ int main(void) {
         printf("1. Inserir Compromisso\n");
         printf("2. Excluir Compromisso\n");
         printf("3. Listar por Mes\n");
-        printf("4. Sair\n? ");
+        printf("4. Modificar Compromisso\n");
+        printf("5. Sair\n? ");
         scanf("%d", &choice);
 
         if (choice == 1) {
@@ -60,9 +61,12 @@ int main(void) {
             } else {
                 printMonth(startPtr, mBusca, aBusca);
             }
+        } else if(choice == 4){
+            modificarCompromisso(&startPtr);
+            printList(startPtr);
         }
 
-    } while (choice != 4);
+    } while (choice != 5);
 
     return 0;
 }
