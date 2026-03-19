@@ -15,25 +15,25 @@ struct Compromisso {
     struct Data data;
 };
 
-struct listNode {
+struct noLista {
     struct Compromisso compromisso;
-    struct listNode *nextPtr;
+    struct noLista *proximoPtr;
 };
 
-typedef struct listNode ListNode;
-typedef ListNode *ListNodePtr;
+typedef struct noLista NoLista;
+typedef NoLista *NoListaPtr;
 
 // Protótipos das Funções
-int idExiste(ListNodePtr currentPtr, int idBusca);
+int idExiste(NoListaPtr atualPtr, int idBusca);
 int validarData(int d, int m, int a);
-void insert(ListNodePtr *sPtr, struct Compromisso novo);
-char deleteNode(ListNodePtr *sPtr, int idBusca);
-int isEmpty(ListNodePtr sPtr);
-void printList(ListNodePtr currentPtr);
-void printMonth(ListNodePtr currentPtr, int mesBusca, int anoBusca);
+void inserir(NoListaPtr *sPtr, struct Compromisso novo);
+char excluirNo(NoListaPtr *sPtr, int idBusca);
+int estaVazia(NoListaPtr sPtr);
+void imprimirLista(NoListaPtr atualPtr);
+void imprimirMes(NoListaPtr atualPtr, int mesBusca, int anoBusca);
 int compararDatas(struct Data d1, struct Data d2);
 int diaDaSemana(int d, int m, int y);
 int diasNoMes(int m, int y);
-void modificarCompromisso(ListNodePtr *sPtr);
+void modificarCompromisso(NoListaPtr *sPtr);
 
 #endif
