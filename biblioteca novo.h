@@ -34,5 +34,6 @@ void printMonth(ListNodePtr currentPtr, int mesBusca, int anoBusca);
 int compararDatas(struct Data d1, struct Data d2);
 int diaDaSemana(int d, int m, int y);
 int diasNoMes(int m, int y);
+void modificarCompromisso(ListNodePtr *sPtr);
 
 #endif
