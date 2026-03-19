@@ -169,3 +169,55 @@ void printMonth(ListNodePtr currentPtr, int mesBusca, int anoBusca) {//printa o 
     if (!encontrou) printf("Nenhum evento programado.\n");
     printf("=============================\n\n");
 }
+
+void modificarCompromisso(ListNodePtr *sPtr) {
+    int idBusca;
+    printf("Digite o ID do compromisso que deseja modificar: ");
+    scanf("%d", &idBusca);
+
+    ListNodePtr temp = *sPtr;
+    struct Compromisso c_aux;
+    int achou = 0;
+
+    while (temp != NULL) {
+        if (temp->compromisso.id == idBusca) {
+            c_aux = temp->compromisso;
+            achou = 1;
+            break;
+        }
+        temp = temp->nextPtr;
+    }
+
+    if (!achou) {
+        printf("ID %d nao encontrado.\n", idBusca);
+        return;
+    }
+
+    int subChoice;
+    printf("\nModificando ID %d:\n", idBusca);
+    printf("1. Alterar Nome\n2. Alterar Descricao\n3. Alterar Data\n? "); //Menu de modificação
+    scanf("%d", &subChoice);
+
+    if (subChoice == 1) {
+        printf("Novo Nome: ");
+        scanf(" %[^\n]", c_aux.nome);
+    } else if (subChoice == 2) {
+        printf("Nova Descricao: ");
+        scanf(" %[^\n]", c_aux.descricao);
+    } else if (subChoice == 3) {
+        do {
+            printf("Nova Data (DD MM AAAA): ");
+            scanf("%d %d %d", &c_aux.data.dia, &c_aux.data.mes, &c_aux.data.ano);
+            if (!validarData(c_aux.data.dia, c_aux.data.mes, c_aux.data.ano)) {
+                printf("Data invalida!\n");
+            }
+        } while (!validarData(c_aux.data.dia, c_aux.data.mes, c_aux.data.ano));
+    } else {
+        printf("Opcao invalida.\n");
+        return;
+    }
+    deleteNode(sPtr, idBusca);
+    insert(sPtr, c_aux);
+
+    printf("\nCompromisso atualizado e lista reordenada com sucesso!\n");
+}
