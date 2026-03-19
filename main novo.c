@@ -2,8 +2,8 @@
 #include "biblioteca.h"
 
 int main(void) {
-    ListNodePtr startPtr = NULL;
-    int choice;
+    NoListaPtr inicioPtr = NULL;
+    int escolha;
 
     do {
         printf("MENU:\n");
@@ -12,18 +12,18 @@ int main(void) {
         printf("3. Listar por Mes\n");
         printf("4. Modificar Compromisso\n");
         printf("5. Sair\n? ");
-        scanf("%d", &choice);
+        scanf("%d", &escolha);
 
-        if (choice == 1) {
+        if (escolha == 1) {
             struct Compromisso c;
             
             do {
                 printf("ID (unico): ");
                 scanf("%d", &c.id);
-                if (idExiste(startPtr, c.id)) {
+                if (idExiste(inicioPtr, c.id)) {
                     printf("Erro: Este ID ja existe! Tente outro.\n");
                 }
-            } while (idExiste(startPtr, c.id));
+            } while (idExiste(inicioPtr, c.id));
 
             printf("Nome do Evento: ");
             scanf(" %[^\n]", c.nome);
@@ -39,19 +39,19 @@ int main(void) {
                 }
             } while (!validarData(c.data.dia, c.data.mes, c.data.ano));
 
-            insert(&startPtr, c);
-            printList(startPtr);
+            inserir(&inicioPtr, c);
+            imprimirLista(inicioPtr);
 
-        } else if (choice == 2) {
+        } else if (escolha == 2) {
             int idBusca;
             printf("ID para excluir: ");
             scanf("%d", &idBusca);
-            char res = deleteNode(&startPtr, idBusca);
+            char res = excluirNo(&inicioPtr, idBusca);
             if (res != '\0') printf("Sucesso! Removido evento com inicial '%c'.\n", res);
             else printf("ID nao encontrado.\n");
-            printList(startPtr);
+            imprimirLista(inicioPtr);
 
-        } else if (choice == 3) {
+        } else if (escolha == 3) {
             int mBusca, aBusca;
             printf("Digite o mes e ano desejados (MM AAAA): ");
             scanf("%d %d", &mBusca, &aBusca);
@@ -59,14 +59,14 @@ int main(void) {
             if (mBusca < 1 || mBusca > 12 || aBusca < 2026) {
                 printf("Data invalida para busca.\n\n");
             } else {
-                printMonth(startPtr, mBusca, aBusca);
+                imprimirMes(inicioPtr, mBusca, aBusca);
             }
-        } else if(choice == 4){
-            modificarCompromisso(&startPtr);
-            printList(startPtr);
+        } else if(escolha == 4){
+            modificarCompromisso(&inicioPtr);
+            imprimirLista(inicioPtr);
         }
 
-    } while (choice != 5);
+    } while (escolha != 5);
 
     return 0;
 }
